@@ -1,0 +1,55 @@
+{% extends 'base_admin.html' %}
+{% block title %}Admin Dashboard | Coconut Auction{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mb-4 text-success">👑 Admin Dashboard</h2>
+
+  <!-- Dashboard Stats -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="card shadow-sm text-center border-0">
+        <div class="card-body">
+          <h5 class="card-title">Total Users</h5>
+          <h3 class="text-success">245</h3> <!-- Replace with dynamic data later -->
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm text-center border-0">
+        <div class="card-body">
+          <h5 class="card-title">Active Auctions</h5>
+          <h3 class="text-success">18</h3> <!-- Replace with dynamic data -->
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm text-center border-0">
+        <div class="card-body">
+          <h5 class="card-title">Pending Approvals</h5>
+          <h3 class="text-warning">5</h3> <!-- Replace with dynamic data -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Actions -->
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="card p-4 shadow-sm border-0 h-100">
+        <h5 class="mb-3">Manage Users</h5>
+        <p>View, block, or promote users on the platform.</p>
+        <a href="{{ url_for('main.manage_users') }}" class="btn btn-outline-success w-100">Go to User Management</a>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card p-4 shadow-sm border-0 h-100">
+        <h5 class="mb-3">Manage Auctions</h5>
+        <p>View all coconut lots, approve or remove listings.</p>
+        <a href="{{ url_for('main.manage_auctions') }}" class="btn btn-outline-primary w-100">Go to Auction Management</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

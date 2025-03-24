@@ -1,0 +1,99 @@
+/* Base Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+h1, h2, h3, h4, h5 {
+  font-weight: 600;
+}
+
+a {
+  text-decoration: none;
+}
+
+.btn-success {
+  transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2);
+}
+
+.btn-outline-success:hover {
+  background-color: #28a745;
+  color: white !important;
+}
+
+/* Navbar */
+.navbar-brand {
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+}
+
+.nav-link {
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: #e0ffe0 !important;
+}
+
+/* Hero Section */
+section.bg-light {
+  background-image: url('/app/static/images/coconut-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  padding: 80px 0;
+}
+
+/* Icon Styling */
+.bi {
+  transition: transform 0.2s ease;
+}
+
+.bi:hover {
+  transform: scale(1.1);
+}
+
+/* Footer */
+footer {
+  background-color: #222;
+  color: #aaa;
+}
+
+footer small {
+  font-size: 0.85rem;
+}
+
+/* Cards (if you use them later) */
+.card {
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  border: none;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Responsive Tweaks */
+@media (max-width: 768px) {
+  .display-4 {
+    font-size: 2rem;
+  }
+
+  .btn-lg {
+    font-size: 1rem;
+    padding: 0.75rem 1.25rem;
+  }
+
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
+}

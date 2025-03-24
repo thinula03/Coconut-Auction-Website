@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Login | Coconut Auction{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        <div class="card shadow p-4">
+          <h3 class="text-center mb-4 text-success">🔐 Login</h3>
+          <form method="POST" action="{{ url_for('main.login') }}">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+              {{ form.email.label(class="form-label") }}
+              {{ form.email(class="form-control") }}
+              {% for error in form.email.errors %}
+                <small class="text-danger">{{ error }}</small>
+              {% endfor %}
+            </div>
+            <div class="mb-3">
+              {{ form.password.label(class="form-label") }}
+              {{ form.password(class="form-control") }}
+              {% for error in form.password.errors %}
+                <small class="text-danger">{{ error }}</small>
+              {% endfor %}
+            </div>
+            <div class="mb-3 form-check">
+              {{ form.remember(class="form-check-input") }}
+              {{ form.remember.label(class="form-check-label") }}
+            </div>
+            {{ form.submit(class="btn btn-success w-100") }}
+          </form>
+          <p class="text-center mt-3 mb-0">Don't have an account? <a href="{{ url_for('main.register') }}">Register</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

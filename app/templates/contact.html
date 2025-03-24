@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us | Coconut Auction{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center mb-4">📬 Get in Touch</h2>
+    <p class="text-center mb-5">Have questions or need support? We're here to help you 24/7.</p>
+
+    <div class="row">
+      <!-- Contact Info -->
+      <div class="col-md-5 mb-4">
+        <div class="card shadow-sm p-4 h-100">
+          <h5 class="mb-3 text-success">🌴 Coconut Auction HQ</h5>
+          <p><strong>Address:</strong><br>123 Palm Lane, Colombo 07, Sri Lanka</p>
+          <p><strong>Email:</strong><br><a href="mailto:support@coconutauction.com">support@coconutauction.com</a></p>
+          <p><strong>Phone:</strong><br>+94 77 123 4567</p>
+
+          <div class="mt-4">
+            <iframe class="w-100 rounded" height="250" frameborder="0" style="border:0"
+              src="https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=Colombo+Sri+Lanka" allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="col-md-7">
+        <div class="card shadow-sm p-4">
+          <form method="post" action="{{ url_for('main.contact') }}">
+            <div class="mb-3">
+              <label for="name" class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="subject" class="form-label">Subject</label>
+              <input type="text" class="form-control" id="subject" name="subject" required>
+            </div>
+            <div class="mb-3">
+              <label for="message" class="form-label">Message</label>
+              <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

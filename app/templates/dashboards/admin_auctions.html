@@ -1,0 +1,94 @@
+{% extends 'base_admin.html' %}
+{% block title %}Manage Auctions | Admin{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mb-4 text-success">🥥 Manage Auctions</h2>
+
+  <!-- Search Form -->
+  <form class="row mb-3" method="get" action="{{ url_for('main.manage_auctions') }}">
+    <div class="col-md-4">
+      <input type="text" name="search" class="form-control" placeholder="Search by title..." value="{{ search }}">
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-outline-success w-100">Search</button>
+    </div>
+  </form>
+
+  <div class="table-responsive">
+    <table class="table table-bordered align-middle table-hover">
+    <div class="mb-3">
+  <a href="{{ url_for('main.manage_auctions') }}" class="btn btn-sm {% if not status %}btn-success{% else %}btn-outline-success{% endif %}">All</a>
+  <a href="{{ url_for('main.manage_auctions', status='approved') }}" class="btn btn-sm {% if status == 'approved' %}btn-success{% else %}btn-outline-success{% endif %}">Approved</a>
+  <a href="{{ url_for('main.manage_auctions', status='pending') }}" class="btn btn-sm {% if status == 'pending' %}btn-success{% else %}btn-outline-success{% endif %}">Pending</a>
+  <a href="{{ url_for('main.manage_auctions', status='rejected') }}" class="btn btn-sm {% if status == 'rejected' %}btn-success{% else %}btn-outline-success{% endif %}">Rejected</a>
+</div>
+      <thead class="table-success">
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Seller ID</th>
+          <th>Status</th>
+          <th>Price</th>
+          <th>Posted</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for auction in auctions.items %}
+        <tr>
+          <td>{{ auction.id }}</td>
+          <td>{{ auction.title }}</td>
+          <td>{{ auction.seller.name }}</td>
+          <td>
+            <span class="badge bg-{{ 'secondary' if auction.status == 'pending' else 'success' if auction.status == 'approved' else 'danger' }}">
+              {{ auction.status.title() }}
+            </span>
+          </td>
+          <td>${{ '%.2f' % auction.starting_price }}</td>
+          <td>{{ auction.created_at.strftime('%Y-%m-%d') }}</td>
+          <td>
+            <div class="btn-group">
+              {% if auction.status == 'pending' %}
+              <form method="POST" action="{{ url_for('main.approve_auction', auction_id=auction.id) }}">
+                <button class="btn btn-sm btn-outline-success">Approve</button>
+              </form>
+              <form method="POST" action="{{ url_for('main.reject_auction', auction_id=auction.id) }}">
+                <button class="btn btn-sm btn-outline-warning">Reject</button>
+              </form>
+              {% endif %}
+              <form method="POST" action="{{ url_for('main.delete_auction', auction_id=auction.id) }}" onsubmit="return confirm('Are you sure you want to delete this auction?');">
+                <button class="btn btn-sm btn-outline-danger">Delete</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <nav class="mt-4">
+    <ul class="pagination justify-content-center">
+      {% if auctions.has_prev %}
+        <li class="page-item">
+          <a class="page-link" href="{{ url_for('main.manage_auctions', page=auctions.prev_num, search=search) }}">Previous</a>
+        </li>
+      {% endif %}
+      {% for page_num in auctions.iter_pages() %}
+        {% if page_num %}
+          <li class="page-item {% if auctions.page == page_num %}active{% endif %}">
+            <a class="page-link" href="{{ url_for('main.manage_auctions', page=page_num, search=search) }}">{{ page_num }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+      {% if auctions.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="{{ url_for('main.manage_auctions', page=auctions.next_num, search=search) }}">Next</a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+{% endblock %}

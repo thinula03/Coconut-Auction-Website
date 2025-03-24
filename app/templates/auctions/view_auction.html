@@ -1,0 +1,50 @@
+{% extends 'base_buyer.html' %}
+{% block title %}{{ auction.title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="text-success">{{ auction.title }}</h2>
+  <p class="text-muted">Posted by Seller ID: {{ auction.seller_id }} | {{ auction.created_at.strftime('%Y-%m-%d') }}</p>
+
+  {% if auction.image %}
+  <img src="{{ url_for('static', filename='uploads/' ~ auction.image) }}" class="img-fluid rounded mb-4" style="max-height: 400px;">
+  {% endif %}
+
+  <p><strong>Description:</strong> {{ auction.description or "No description." }}</p>
+  <p><strong>Starting Price:</strong> ${{ '%.2f' % auction.starting_price }}</p>
+  <p><strong>Highest Bid:</strong> <span id="highest-bid-value">${{ '%.2f' % highest_bid }}</span></p>
+
+  <hr>
+  <h5>💵 Place a Bid</h5>
+{% if is_expired %}
+<div class="alert alert-warning">⏰ Bidding has ended for this auction.</div>
+{% else %}
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+      {{ form.amount.label(class="form-label") }}
+      {{ form.amount(class="form-control") }}
+    </div>
+    {{ form.submit(class="btn btn-success") }}
+  </form>
+{% endif %}
+</div>
+
+    <script>
+  const bidValueEl = document.getElementById('highest-bid-value');
+  const auctionId = {{ auction.id }};
+
+  async function updateHighestBid() {
+    try {
+      const res = await fetch(`/auction/${auctionId}/highest-bid`);
+      const data = await res.json();
+      bidValueEl.textContent = `$${data.highest_bid}`;
+    } catch (err) {
+      console.error("Failed to fetch bid data", err);
+    }
+  }
+
+  // Update every 5 seconds
+  setInterval(updateHighestBid, 5000);
+</script>
+{% endblock %}

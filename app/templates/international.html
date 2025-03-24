@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}International Coconut Market{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center mb-4">🌍 International Coconut Market</h2>
+    <p class="text-center mb-4">Explore coconut lots ready for global export. Use the filters below to browse by region or currency.</p>
+
+    <!-- Filters -->
+    <div class="row mb-4 justify-content-center">
+      <div class="col-md-4 mb-2">
+        <select class="form-select" id="countryFilter">
+          <option selected disabled>Filter by Country</option>
+          <option>All</option>
+          <option>Philippines</option>
+          <option>Sri Lanka</option>
+          <option>India</option>
+          <option>Indonesia</option>
+        </select>
+      </div>
+      <div class="col-md-4 mb-2">
+        <select class="form-select" id="currencyFilter">
+          <option selected disabled>Show Prices In</option>
+          <option value="usd">USD</option>
+          <option value="eur">EUR</option>
+          <option value="aed">AED</option>
+          <option value="lkr">LKR</option>
+          <option value="inr">INR</option>
+          <option value="php">PHP</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Coconut Lots -->
+    <div class="row" id="marketLots">
+      {% for i in range(4) %}
+      <div class="col-md-6 col-lg-4 mb-4 coconut-lot" data-country="Philippines">
+        <div class="card h-100 shadow-sm">
+          <img src="{{ url_for('static', filename='images/coconut_export.jpg') }}" class="card-img-top" alt="Export Coconut">
+          <div class="card-body">
+            <h5 class="card-title">Lot #INTL-30{{ i }}</h5>
+            <p><strong>Type:</strong> Husked Coconuts</p>
+            <p><strong>Country:</strong> Philippines 🇵🇭</p>
+            <ul class="list-group list-group-flush mb-3 price-list">
+              <li class="list-group-item usd"><strong>USD:</strong> $450</li>
+              <li class="list-group-item eur d-none"><strong>EUR:</strong> €415</li>
+              <li class="list-group-item aed d-none"><strong>AED:</strong> د.إ 1650</li>
+              <li class="list-group-item lkr d-none"><strong>LKR:</strong> Rs 139,000</li>
+              <li class="list-group-item inr d-none"><strong>INR:</strong> ₹37,000</li>
+              <li class="list-group-item php d-none"><strong>PHP:</strong> ₱25,200</li>
+            </ul>
+            <a href="{{ url_for('main.auction') }}" class="btn btn-outline-success w-100">View Auction</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Map Section -->
+<section class="py-5">
+  <div class="container">
+    <h3 class="text-center mb-4">🗺️ Global Coconut Export Map</h3>
+    <div class="ratio ratio-16x9">
+      <iframe src="https://www.google.com/maps/d/u/0/embed?mid=1QaF-jLHzp1m8TbzW6VQRE4eoiK0&hl=en" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- Charts -->
+<section class="py-5">
+  <div class="container">
+    <h3 class="text-center mb-4">📊 Export Statistics</h3>
+    <div class="row text-center mb-4">
+      <div class="col-md-3"><h2 class="text-success">+82</h2><p class="text-muted">Exporting Countries</p></div>
+      <div class="col-md-3"><h2 class="text-success">+45K</h2><p class="text-muted">Coconut Lots Traded</p></div>
+      <div class="col-md-3"><h2 class="text-success">$5.2M</h2><p class="text-muted">Total Value</p></div>
+      <div class="col-md-3"><h2 class="text-success">98%</h2><p class="text-muted">Fulfilled Shipments</p></div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-4"><canvas id="barChart"></canvas></div>
+      <div class="col-md-6 mb-4"><canvas id="pieChart"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- Chart.js + Filters Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Currency Filter
+  const currencySelector = document.getElementById("currencyFilter");
+  currencySelector.addEventListener("change", () => {
+    document.querySelectorAll(".price-list").forEach(list => {
+      list.querySelectorAll("li").forEach(li => li.classList.add("d-none"));
+      const active = list.querySelector("." + currencySelector.value);
+      if (active) active.classList.remove("d-none");
+    });
+  });
+
+  // Country Filter
+  const countrySelector = document.getElementById("countryFilter");
+  countrySelector.addEventListener("change", () => {
+    const selected = countrySelector.value;
+    document.querySelectorAll(".coconut-lot").forEach(card => {
+      if (selected === "All" || card.dataset.country === selected) {
+        card.style.display = "block";
+      } else {
+        card.style.display = "none";
+      }
+    });
+  });
+
+  // Bar Chart
+  new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Philippines', 'Sri Lanka', 'India', 'Indonesia', 'Vietnam'],
+      datasets: [{
+        label: 'Export Volume (tons)',
+        data: [12000, 9800, 8700, 7400, 6200],
+        backgroundColor: 'rgba(40, 167, 69, 0.6)',
+        borderColor: 'rgba(40, 167, 69, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  // Pie Chart
+  new Chart(document.getElementById('pieChart'), {
+    type: 'pie',
+    data: {
+      labels: ['Asia', 'Europe', 'North America', 'Middle East'],
+      datasets: [{
+        data: [45, 25, 20, 10],
+        backgroundColor: [
+          'rgba(40, 167, 69, 0.7)',
+          'rgba(23, 162, 184, 0.7)',
+          'rgba(255, 193, 7, 0.7)',
+          'rgba(220, 53, 69, 0.7)'
+        ]
+      }]
+    }
+  });
+</script>
+{% endblock %}

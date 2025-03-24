@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Available Coconut Auctions{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <h2 class="text-center mb-4">Coconut Lots Open for Bidding</h2>
+    <div class="row">
+      {% for auction in auctions %}
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+          {% if auction.image %}
+          <img src="{{ url_for('static', filename='uploads/' ~ auction.image) }}" class="card-img-top" alt="Coconut Lot">
+          {% else %}
+          <img src="{{ url_for('static', filename='images/coconut_sample.jpg') }}" class="card-img-top" alt="Coconut Lot">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">Lot #C-{{ auction.id }}</h5>
+
+            {% if auction.bids %}
+              {% set max_bid = auction.bids | map(attribute='amount') | max %}
+            {% else %}
+              {% set max_bid = auction.starting_price %}
+            {% endif %}
+
+            <p class="card-text">
+              <strong>Type:</strong> {{ auction.title }}<br>
+              <strong>Location:</strong> Seller ID {{ auction.seller_id }}<br>
+              <strong>Current Bid:</strong> ${{ '%.2f' % max_bid }}<br>
+              {% if auction.deadline %}
+                <strong>Deadline:</strong> {{ auction.deadline.strftime('%Y-%m-%d %H:%M') }}
+              {% endif %}
+            </p>
+
+            {% if auction.deadline and auction.deadline <= now %}
+              <div class="alert alert-warning small mb-0">Bidding closed</div>
+            {% else %}
+              <form method="POST" action="{{ url_for('main.place_bid') }}">
+                <div class="input-group mb-2">
+                  <input type="number" name="bid_amount" class="form-control" placeholder="Enter your bid" required min="{{ max_bid + 1 }}">
+                  <input type="hidden" name="lot_id" value="{{ auction.id }}">
+                  <button class="btn btn-success" type="submit">Bid</button>
+                </div>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <p class="text-muted text-center">No active auctions found.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

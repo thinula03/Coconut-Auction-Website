@@ -1,0 +1,52 @@
+{% extends 'base_seller.html' %}
+{% block title %}Seller Dashboard | Coconut Auction{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mb-4 text-success">🌴 Welcome, {{ name }} (Seller)</h2>
+
+  <div class="mb-4 text-end">
+    <a href="{{ url_for('main.post_coconut_lot') }}" class="btn btn-success">+ Post Coconut Lot</a>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-bordered align-middle table-hover">
+      <thead class="table-success">
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Status</th>
+          <th>Starting Price</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for auction in auctions %}
+        <tr>
+          <td>{{ auction.id }}</td>
+          <td>{{ auction.title }}</td>
+          <td>
+            <span class="badge bg-{{ 'secondary' if auction.status == 'pending' else 'success' if auction.status == 'approved' else 'danger' }}">
+              {{ auction.status.title() }}
+            </span>
+          </td>
+          <td>${{ '%.2f' % auction.starting_price }}</td>
+          <td>{{ auction.created_at.strftime('%Y-%m-%d') }}</td>
+          <td>
+            <div class="btn-group">
+              <a href="{{ url_for('main.edit_auction', auction_id=auction.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+              <form method="POST" action="{{ url_for('main.delete_own_auction', auction_id=auction.id) }}" onsubmit="return confirm('Delete this auction?');">
+                <button class="btn btn-sm btn-outline-danger">Delete</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-center text-muted">No auctions posted yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

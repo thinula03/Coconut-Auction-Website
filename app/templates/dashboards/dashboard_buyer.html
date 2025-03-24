@@ -1,0 +1,28 @@
+{% extends 'base_buyer.html' %}
+{% block title %}Buyer Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mb-4 text-success">👋 Welcome, {{ name }} (Buyer)</h2>
+
+  <div class="row">
+    {% for auction in auctions %}
+    <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card shadow-sm h-100">
+        {% if auction.image %}
+        <img src="{{ url_for('static', filename='uploads/' ~ auction.image) }}" class="card-img-top" alt="Coconut Lot Image">
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ auction.title }}</h5>
+          <p class="card-text text-muted small">Posted on {{ auction.created_at.strftime('%Y-%m-%d') }}</p>
+          <p><strong>Starting Price:</strong> ${{ '%.2f' % auction.starting_price }}</p>
+          <a href="{{ url_for('main.view_auction', auction_id=auction.id) }}" class="btn btn-outline-success w-100">View & Bid</a>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <p class="text-muted">No approved auctions available at the moment.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

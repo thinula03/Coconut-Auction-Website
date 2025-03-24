@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% block title %}Welcome to Coconut Auction{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-light py-5 text-center" style="background-image: url({{ url_for('static', filename='images/coconut-bg.jpg') }});">
+  <div class="container">
+    <h1 class="display-4 fw-bold">Welcome to the Global Coconut Auction Hub</h1>
+    <p class="lead">Buy and sell coconuts with trusted sellers and international reach.</p>
+    <a href="{{ url_for('main.register') }}" class="btn btn-success btn-lg me-2">Get Started</a>
+    <a href="{{ url_for('main.auction') }}" class="btn btn-outline-success btn-lg">View Auctions</a>
+  </div>
+</section>
+
+<!-- Why Choose Us Section -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="text-center mb-4">Why Choose Us?</h2>
+    <div class="row text-center">
+      <div class="col-md-4">
+        <div class="mb-3">
+          <i class="bi bi-globe2 display-4 text-success"></i>
+        </div>
+        <h5>Global Reach</h5>
+        <p>Connect with buyers and sellers across the world with confidence.</p>
+      </div>
+      <div class="col-md-4">
+        <div class="mb-3">
+          <i class="bi bi-currency-dollar display-4 text-success"></i>
+        </div>
+        <h5>Fair Auctions</h5>
+        <p>Transparent bidding ensures you get the best price every time.</p>
+      </div>
+      <div class="col-md-4">
+        <div class="mb-3">
+          <i class="bi bi-shield-lock display-4 text-success"></i>
+        </div>
+        <h5>Secure Transactions</h5>
+        <p>Safe, encrypted, and hassle-free payment processing for peace of mind.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Recommended Auctions -->
+<section class="bg-white py-5">
+  <div class="container">
+    <h2 class="text-center mb-4">Recommended Auctions</h2>
+    <div class="row">
+      {% for auction in recommended_auctions %}
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+          {% if auction.image %}
+          <img src="{{ url_for('static', filename='uploads/' ~ auction.image) }}" class="card-img-top" alt="Coconut Lot">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">{{ auction.title }}</h5>
+            {% if auction.bids %}
+              {% set max_bid = auction.bids | map(attribute='amount') | max %}
+            {% else %}
+              {% set max_bid = auction.starting_price %}
+            {% endif %}
+            <p class="card-text">
+              {{ auction.description[:100] }}...<br>
+              Current bid: <strong>${{ '%.2f' % max_bid }}</strong>
+            </p>
+            <a href="{{ url_for('main.view_auction', auction_id=auction.id) }}" class="btn btn-sm btn-success">Place Bid</a>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <p class="text-muted text-center">No recommended auctions available.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Top Sellers -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center mb-4">Top Sellers</h2>
+    <div class="row justify-content-center">
+      {% for seller, count in top_sellers %}
+      <div class="col-md-3 text-center">
+        <img src="{{ url_for('static', filename='images/default-user.jpg') }}" class="rounded-circle mb-2" width="100" height="100">
+        <h6 class="fw-bold">{{ seller.name }}</h6>
+        <p class="text-muted">Seller ID: {{ seller.id }}</p>
+      </div>
+      {% else %}
+      <p class="text-muted text-center">No sellers found.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Available Auctions -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="text-center mb-4">Available Auctions</h2>
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered align-middle">
+        <thead class="table-success">
+          <tr>
+            <th>Lot ID</th>
+            <th>Description</th>
+            <th>Seller</th>
+            <th>Current Bid</th>
+            <th>Time Left</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for auction in available_auctions %}
+          <tr>
+            <td>#C-{{ auction.id }}</td>
+            <td>{{ auction.title }}</td>
+            <td>Seller ID {{ auction.seller_id }}</td>
+            <td>
+              {% if auction.bids %}
+                {% set max_bid = auction.bids | map(attribute='amount') | max %}
+              {% else %}
+                {% set max_bid = auction.starting_price %}
+              {% endif %}
+              ${{ '%.2f' % max_bid }}
+            </td>
+            <td>
+              {% if auction.deadline %}
+                {% set time_left = auction.deadline - now %}
+                {% if time_left.total_seconds() > 0 %}
+                  {{ time_left.seconds // 3600 }}h {{ (time_left.seconds // 60) % 60 }}m
+                {% else %}
+                  Expired
+                {% endif %}
+              {% else %}
+                N/A
+              {% endif %}
+            </td>
+            <td><a href="{{ url_for('main.view_auction', auction_id=auction.id) }}" class="btn btn-sm btn-outline-success">Bid Now</a></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="6" class="text-center text-muted">No available auctions found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

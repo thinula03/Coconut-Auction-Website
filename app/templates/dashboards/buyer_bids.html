@@ -1,0 +1,30 @@
+{% extends 'base_buyer.html' %}
+{% block title %}My Bids{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mb-4 text-success">📄 My Bids</h2>
+  <table class="table table-bordered table-hover">
+    <thead class="table-success">
+      <tr>
+        <th>Auction</th>
+        <th>Amount</th>
+        <th>Placed On</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for bid in bids %}
+      <tr>
+        <td><a href="{{ url_for('main.view_auction', auction_id=bid.auction_id) }}">{{ bid.auction.title }}</a></td>
+        <td>${{ '%.2f' % bid.amount }}</td>
+        <td>{{ bid.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="3" class="text-center text-muted">No bids placed yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
